@@ -1,0 +1,7 @@
+interface:
+  display_name: "中文标点规范化"
+  short_description: "规范中文正文标点并保护代码和配置语法。"
+  default_prompt: "使用 $fix-punctuation 检查并规范当前中文或中英混排文本的标点，同时保护代码、路径、配置和公式。"
+
+policy:
+  allow_implicit_invocation: true
