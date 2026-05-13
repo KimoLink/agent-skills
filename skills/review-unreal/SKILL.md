@@ -11,7 +11,7 @@ description: Use when 用户要求对 Unreal Engine、UE、UE5、虚幻引擎、
 
 评审对象包括 `.uproject`、`Source/`、`Content/`、`Config/`、`Plugins/`、`*.Build.cs`、`*.Target.cs`、C++ 模块、Blueprint、资产命名、Cook/Automation、Git LFS、DerivedDataCache/Saved/Intermediate/Binaries 治理、文档同步和提交规范。
 
-**REQUIRED BASELINE:** 先阅读并采用 `review-engineering` 的通用工程基线。
+**REQUIRED SUB-SKILL:** 先阅读并采用 `review-engineering` 的通用工程基线。
 
 使用本 skill 时，必须把 `review-engineering` 的通用工程基线和本 skill 的 Unreal 专项清单合并使用，最终只输出一次评审、一次结论和一份报告。本 skill 只补充 Unreal 专项要求，不能跳过或降低通用工程基线。
 
@@ -117,8 +117,6 @@ description: Use when 用户要求对 Unreal Engine、UE、UE5、虚幻引擎、
 - 是否有 C++ 格式化、clang-format、clang-tidy、静态分析或团队 IDE 规则。
 - 如有命令入口，再检查编译、UHT、Cook、Automation 和打包日志；warning 需要记录。
 - 没有自动化入口时，重点检查目录、模块、资产、配置、构建文档、测试入口和产物治理。
-
-CI 不作为默认检查项。仓库没有 CI 时，不得把缺失本身写成问题；只有用户、项目文档、部门规范或团队约定明确要求 CI，或仓库已经存在 CI 配置时，才检查 CI 配置并记录相关问题。
 
 不能把未运行的 Unreal 构建写成通过。只能写“未执行”，并说明原因。
 

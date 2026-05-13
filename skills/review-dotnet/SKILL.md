@@ -11,7 +11,7 @@ description: Use when 用户要求对 C#、.NET、ASP.NET Core、WPF、WinUI、A
 
 评审对象包括 `.sln`、`.csproj`、`Directory.Build.props`、`Directory.Packages.props`、nullable、analyzers、DI、配置、日志、测试项目、ASP.NET Core、WPF、WinUI、Avalonia、MAUI、后台服务、类库、`dotnet format/build/test`、文档同步和提交规范。
 
-**REQUIRED BASELINE:** 先阅读并采用 `review-engineering` 的通用工程基线。
+**REQUIRED SUB-SKILL:** 先阅读并采用 `review-engineering` 的通用工程基线。
 
 使用本 skill 时，必须把 `review-engineering` 的通用工程基线和本 skill 的 .NET 专项清单合并使用，最终只输出一次评审、一次结论和一份报告。本 skill 只补充 .NET 专项要求，不能跳过或降低通用工程基线。
 
@@ -135,8 +135,7 @@ description: Use when 用户要求对 C#、.NET、ASP.NET Core、WPF、WinUI、A
 - 打包发布：`dotnet pack`、`dotnet publish` 或平台安装包脚本。
 
 如果只有格式化修复命令没有 verify/check 入口，记录为质量门禁缺失。  
-如果 build、test、pack 或 publish 无法执行，说明原因，不写成通过。  
-CI 不作为默认检查项。仓库没有 CI 时，不得把缺失本身写成问题；只有用户、项目文档、部门规范或团队约定明确要求 CI，或仓库已经存在 CI 配置时，才检查 CI 配置并记录相关问题。
+如果 build、test、pack 或 publish 无法执行，说明原因，不写成通过。
 
 ### 命名、文档和提交规范
 
