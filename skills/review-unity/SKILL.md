@@ -19,13 +19,13 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 
 - 使用中文输出。
 - 不写模板腔、口号和对立转折式套话。
-- 先确认评审依据层级：`review-engineering` 的通用硬性工程基线、本 skill 的 Unity 专项基线、用户或部门通用要求、项目已有规范、仓库事实、工具配置、CI 或团队约定。报告里要写清楚依据来自哪里。
+- 先确认评审依据层级：`review-engineering` 的通用硬性工程基线、本 skill 的 Unity 专项基线、用户或部门通用要求、项目已有规范、仓库事实、工具配置或团队约定。报告里要写清楚依据来自哪里。
 - 项目 `AGENTS.md`、README 或现场文档不能降低通用硬性工程基线和本 skill 的专项硬性要求；如果项目规范与基线冲突，应记录为“项目规范与工程基线冲突”，而不是按项目规范放行。
 - 项目规范可以补充、细化或提高要求；若项目缺少规范，只能定性为“规范缺失带来的工程风险”或“建议补充规范”，不要写成违反既定规范。
 - 问题定性要区分五类：违反硬性工程基线、项目规范与工程基线冲突、违反项目已确认规范、规范缺失导致风险、可选优化建议。
 - 结论必须有文件、目录、配置、命令输出或仓库状态支撑。
 - 不把项目能在编辑器打开当成工程合格。
-- Unity 项目不一定适合在评审环境自动构建；没有可靠 batchmode、CI 或许可证环境时不要硬上构建。
+- Unity 项目不一定适合在评审环境自动构建；没有可靠 batchmode、许可证或目标平台环境时不要硬上构建。
 - 能检查的静态结构、资源规则、包配置、测试入口、日志产物和 Git 治理必须检查。
 - 有自动化编译、测试或构建入口时，warning 需要作为风险记录。
 
@@ -33,19 +33,19 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 
 读取：
 
-- `AGENTS.md`、README、开发文档、构建文档、资源规范、命名规范。
+- 存在的 `AGENTS.md`、README、开发文档、构建文档、资源规范、命名规范。
 - `ProjectSettings/ProjectVersion.txt`、`ProjectSettings/` 关键配置。
 - `Packages/manifest.json`、`Packages/packages-lock.json`。
 - `Assets/` 一级目录，重点核对 `Arts/`、`Plugins/`、`Resources/`、`Scenes/`、`Scripts/`、`Tests/`。
 - 关键 Unity 资源和工程文件：`*.asmdef`、`*.unity`、`*.prefab`、`*.asset`、`*.meta`。
-- `.gitignore`、`.gitattributes`、Git LFS 规则、`.editorconfig`、CI 配置。
+- `.gitignore`、`.gitattributes`、Git LFS 规则、`.editorconfig`、已有 CI 配置。
 
 核对：
 
 - Unity 版本和文档是否一致。
 - 项目类型是仿真演示、三维可视化、数字孪生、XR、桌面端展示、移动端展示还是 Unity 工具。
 - 是否使用 URP、HDRP、Built-in、Entities、Input System、Addressables、Netcode 等关键包。
-- 是否有自动化测试、batchmode 构建、CI 或团队构建说明。
+- 是否有自动化测试、batchmode 构建或团队构建说明；已有 CI 配置时再检查 CI。
 - Git LFS 和 `.gitignore` 是否匹配 Unity 资源形态。
 
 ## 核心检查项
@@ -114,7 +114,7 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 
 - `Packages/manifest.json` 和 `packages-lock.json` 是否提交并一致。
 - 是否混入无关包、重复包、临时测试包或本地绝对路径包。
-- scoped registry 允许写在 `Packages/manifest.json`。评审重点是 registry 是否属于项目依赖所需、团队和 CI 是否可访问、scope 是否准确、是否错误夹带个人 token、临时账号、本机绝对路径或只在个人电脑可用的地址。
+- scoped registry 允许写在 `Packages/manifest.json`。评审重点是 registry 是否属于项目依赖所需、团队和实际构建环境是否可访问、scope 是否准确、是否错误夹带个人 token、临时账号、本机绝对路径或只在个人电脑可用的地址。
 - `ProjectSettings/` 是否完整提交，是否包含和团队规范冲突的编辑器偏好。
 - Player Settings、Quality、Graphics、URP/HDRP、Input、Physics、Time、Tags/Layers 是否有明确项目选择。
 - 平台相关设置是否集中管理，避免脚本中到处散落平台宏和资源路径。
@@ -135,7 +135,7 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 检查：
 
 - 是否存在 `.editorconfig`、Rider/VS 团队规则、dotnet format、csharpier 或团队 C# 格式约定。
-- 格式化配置是否和文档、CI、IDE 设置一致。
+- 格式化配置是否和文档、IDE 设置一致；已有 CI 配置时再检查 CI 是否一致。
 - 是否有只检查不修改的格式检查入口；没有时记录为质量门禁缺失。
 - 是否存在命名、nullable、using 排序、字段序列化、访问修饰符、Unity 生命周期方法顺序等基础规范。
 - 是否滥用 `public` 字段代替 `[SerializeField] private`，是否缺少组件引用校验。
@@ -143,15 +143,15 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 
 ### 静态检查、测试、编译和构建
 
-先判断是否具备可靠自动化入口。Unity 项目没有 batchmode、CI、许可证或目标平台环境时，不要硬上构建。
+先判断是否具备可靠自动化入口。Unity 项目没有 batchmode、许可证或目标平台环境时，不要硬上构建。
 
 可检查项：
 
 - EditMode tests、PlayMode tests 是否存在并有运行说明。
-- 是否有 Unity Test Framework、CI 命令、batchmode 构建脚本或自定义 BuildPipeline。
+- 是否有 Unity Test Framework、batchmode 构建脚本或自定义 BuildPipeline；已有 CI 配置时再检查 CI 命令。
 - 是否有 Roslyn analyzer、StyleCop、Rider InspectCode、dotnet format、静态代码检查或自定义检查。
 - 如有命令入口，再检查测试、脚本编译、资源导入和构建日志；warning 需要记录。
-- 没有自动化入口时，重点检查目录、资源、asmdef、测试目录、构建文档、CI 配置和日志产物治理。
+- 没有自动化入口时，重点检查目录、资源、asmdef、测试目录、构建文档和日志产物治理；已有 CI 配置时再检查 CI 配置。
 
 不能把未运行的 Unity 构建写成通过。只能写“未执行”，并说明原因。
 
@@ -181,7 +181,7 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 
 - Git 历史中是否有 `Library/`、构建产物、日志、临时资源、个人设置或大体积二进制直接进入普通 Git 对象。
 - Git LFS、`.gitignore`、`.gitattributes` 是否和当前资源类型、构建产物、测试产物匹配。
-- README、AGENTS、构建文档、资源规范、命名规范是否与当前工程一致。
+- README、已存在的 AGENTS、构建文档、资源规范、命名规范是否与当前工程一致。
 - Unity 版本、包版本、构建命令、测试命令、目标平台说明是否同步。
 - Git 提交信息是否符合正式项目要求，并按 `review-engineering` 与 `/git-commit` 标准检查 subject、body、语言、逻辑单元、历史可追溯性和是否夹带过程噪音。
 
