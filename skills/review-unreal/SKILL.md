@@ -11,9 +11,9 @@ description: Use when 用户要求对 Unreal Engine、UE、UE5、虚幻引擎、
 
 评审对象包括 `.uproject`、`Source/`、`Content/`、`Config/`、`Plugins/`、`*.Build.cs`、`*.Target.cs`、C++ 模块、Blueprint、资产命名、Cook/Automation、Git LFS、DerivedDataCache/Saved/Intermediate/Binaries 治理、文档同步和提交规范。
 
-**REQUIRED SUB-SKILL:** Use `review-engineering` before this skill.
+**REQUIRED BASELINE:** 先阅读并采用 `review-engineering` 的通用工程基线。
 
-使用本 skill 时，必须先执行 `review-engineering` 并完成通用工程评审，再进入本 skill 的 Unreal 专项检查。本 skill 只补充 Unreal 专项要求，不能跳过或降低通用工程基线。
+使用本 skill 时，必须把 `review-engineering` 的通用工程基线和本 skill 的 Unreal 专项清单合并使用，最终只输出一次评审、一次结论和一份报告。本 skill 只补充 Unreal 专项要求，不能跳过或降低通用工程基线。
 
 ## 评审原则
 

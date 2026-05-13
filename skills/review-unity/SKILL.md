@@ -11,9 +11,9 @@ description: Use when 用户要求对 Unity、Unity3D、仿真演示、三维可
 
 评审对象包括 `Assets/` 目录组织、asmdef 模块边界、场景和 Prefab 治理、Runtime/Editor 分离、资源导入和清理规则、第三方资产落位、包管理、质量门禁、Git LFS、仓库治理、测试体系、构建入口、文档同步和提交规范。
 
-**REQUIRED SUB-SKILL:** Use `review-engineering` before this skill.
+**REQUIRED BASELINE:** 先阅读并采用 `review-engineering` 的通用工程基线。
 
-使用本 skill 时，必须先按 `review-engineering` 完成通用工程评审，再进入本 skill 的 Unity 专项检查。本 skill 只补充 Unity 专项要求，不能跳过或降低通用工程基线。
+使用本 skill 时，必须把 `review-engineering` 的通用工程基线和本 skill 的 Unity 专项清单合并使用，最终只输出一次评审、一次结论和一份报告。本 skill 只补充 Unity 专项要求，不能跳过或降低通用工程基线。
 
 ## 评审原则
 

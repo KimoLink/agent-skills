@@ -24,7 +24,7 @@ Claude Code、Cursor、Codex 等工具的配置目录和指令文件约定并不
 - `de-ai`：降低中文专业文本的 AI 腔和模板化表达。
 - `fix-punctuation`：规范中文和中英混排文本标点，同时保护代码、配置和公式。
 - `git-commit`：按仓库历史风格检查、暂存、拆分并提交 Git 变更。
-- `review-engineering`：通用工程评审基线，所有专项工程评审前置使用。
+- `review-engineering`：通用工程评审基线，供所有专项工程评审合并采用。
 - `review-nest`：NestJS/Node.js 后端工程专项评审。
 - `review-nuxt`：Nuxt/Vue 前端工程专项评审。
 - `review-dotnet`：C#/.NET、ASP.NET Core 和桌面端工程专项评审。
@@ -36,6 +36,6 @@ Claude Code、Cursor、Codex 等工具的配置目录和指令文件约定并不
 ## 维护规则
 
 - 修改 skill 时同时检查 `SKILL.md` 和对应 `agents/openai.yaml` 是否一致。
-- 评审类专项 skill 必须先引用 `review-engineering` 的通用工程基线。
+- 评审类专项 skill 必须结合 `review-engineering` 的通用工程基线。
 - Git 提交信息默认使用中文，并写清楚实际变更内容。
 - 不把密钥、token、本地路径凭据或临时生成文件提交进仓库。

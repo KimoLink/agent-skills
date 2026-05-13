@@ -11,9 +11,9 @@ description: Use when 用户要求对 C#、.NET、ASP.NET Core、WPF、WinUI、A
 
 评审对象包括 `.sln`、`.csproj`、`Directory.Build.props`、`Directory.Packages.props`、nullable、analyzers、DI、配置、日志、测试项目、ASP.NET Core、WPF、WinUI、Avalonia、MAUI、后台服务、类库、`dotnet format/build/test`、文档同步和提交规范。
 
-**REQUIRED SUB-SKILL:** Use `review-engineering` before this skill.
+**REQUIRED BASELINE:** 先阅读并采用 `review-engineering` 的通用工程基线。
 
-使用本 skill 时，必须先执行 `review-engineering` 并完成通用工程评审，再进入本 skill 的 .NET 专项检查。本 skill 只补充 .NET 专项要求，不能跳过或降低通用工程基线。
+使用本 skill 时，必须把 `review-engineering` 的通用工程基线和本 skill 的 .NET 专项清单合并使用，最终只输出一次评审、一次结论和一份报告。本 skill 只补充 .NET 专项要求，不能跳过或降低通用工程基线。
 
 ## 评审原则
 
