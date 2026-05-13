@@ -16,7 +16,7 @@ Claude Code、Cursor、Codex 等工具的配置目录和指令文件约定并不
 
 - 使用 `$git-commit` 收口 Git 变更。
 - 使用 `$review-engineering` 做通用工程评审。
-- 使用 `$review-nuxt`、`$review-nest`、`$review-unity` 做专项工程评审。
+- 使用 `$review-nuxt`、`$review-nest`、`$review-unity`、`$review-unreal`、`$review-qt`、`$review-dotnet`、`$review-rust` 做专项工程评审。
 - 使用 `$de-ai` 或 `$fix-punctuation` 处理中文文档。
 
 ## 当前 skills
@@ -27,7 +27,11 @@ Claude Code、Cursor、Codex 等工具的配置目录和指令文件约定并不
 - `review-engineering`：通用工程评审基线，所有专项工程评审前置使用。
 - `review-nest`：NestJS/Node.js 后端工程专项评审。
 - `review-nuxt`：Nuxt/Vue 前端工程专项评审。
+- `review-dotnet`：C#/.NET、ASP.NET Core 和桌面端工程专项评审。
+- `review-qt`：Qt Widgets/QML/C++ 桌面端工程专项评审。
+- `review-rust`：Rust 后端、CLI、库和 workspace 工程专项评审。
 - `review-unity`：Unity 工程、资源和脚本架构专项评审。
+- `review-unreal`：Unreal Engine 工程、C++ 模块和资产治理专项评审。
 
 ## 维护规则
 
