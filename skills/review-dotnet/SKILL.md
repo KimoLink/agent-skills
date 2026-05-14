@@ -13,20 +13,11 @@ description: Use when 用户要求对 C#、.NET、ASP.NET Core、WPF、WinUI、A
 
 **REQUIRED SUB-SKILL:** 先阅读并采用 `review-engineering` 的通用工程基线。
 
-使用本 skill 时，必须把 `review-engineering` 的通用工程基线和本 skill 的 .NET 专项清单合并使用，最终只输出一次评审、一次结论和一份报告。本 skill 只补充 .NET 专项要求，不能跳过或降低通用工程基线。
+## 使用方式
 
-## 评审原则
-
-- 使用中文输出。
-- 不写模板腔、口号和对立转折式套话。
-- 先确认评审依据层级：`review-engineering` 的通用硬性工程基线、本 skill 的 .NET 专项基线、用户或部门通用要求、项目已有规范、仓库事实、工具配置或团队约定。报告里要写清楚依据来自哪里。
-- 项目 `AGENTS.md`、README 或现场文档不能降低通用硬性工程基线和本 skill 的专项硬性要求；如果项目规范与基线冲突，应记录为“项目规范与工程基线冲突”，而不是按项目规范放行。
-- 项目规范可以补充、细化或提高要求；若项目缺少规范，只能定性为“规范缺失带来的工程风险”或“建议补充规范”，不要写成违反既定规范。
-- 问题定性要区分五类：违反硬性工程基线、项目规范与工程基线冲突、违反项目已确认规范、规范缺失导致风险、可选优化建议。
-- 结论必须有文件、目录、配置、命令输出或仓库状态支撑。
+- 先采用 `review-engineering` 的通用基线、执行红线、问题定性和报告落地要求。
+- 再使用本 skill 的 .NET 专项清单补充检查；最终只输出一次评审、一次结论和一份报告。
 - 不把 API 能返回、窗口能打开或服务能启动当成工程合格。
-- 能检查的命令要检查；不能检查时说明原因。
-- 格式检查只做 check，不自动格式化全仓。
 - `dotnet build`、`dotnet test`、analyzers 或 source generator 出现 warning 要作为风险记录。
 
 ## 先确认项目事实
@@ -134,7 +125,7 @@ description: Use when 用户要求对 C#、.NET、ASP.NET Core、WPF、WinUI、A
 - 测试：`dotnet test`，必要时指定解决方案、测试项目或过滤条件。
 - 打包发布：`dotnet pack`、`dotnet publish` 或平台安装包脚本。
 
-如果只有格式化修复命令没有 verify/check 入口，记录为质量门禁缺失。  
+如果只有格式化修复命令没有 verify/check 入口，记录为质量门禁缺失。
 如果 build、test、pack 或 publish 无法执行，说明原因，不写成通过。
 
 ### 命名、文档和提交规范
@@ -148,18 +139,14 @@ description: Use when 用户要求对 C#、.NET、ASP.NET Core、WPF、WinUI、A
 - .NET SDK、TargetFramework、数据库 migration、构建命令、测试命令、发布命令是否同步。
 - Git 提交信息是否符合正式项目要求，并按 `review-engineering` 与 `/git-commit` 标准检查 subject、body、语言、逻辑单元、历史可追溯性和是否夹带过程噪音。
 
-## 问题分级
+## 专项分级
 
 - 高：解决方案项目边界失控、Nullable/analyzers 关闭或被大范围绕过、DI 生命周期错误、配置和密钥治理失效、build/test 不可用、编译 warning、服务或 UI 层直连基础设施导致架构倒置、bin/obj/publish/TestResults 或敏感配置污染仓库。
 - 中：项目引用方向混乱、DTO/实体/ViewModel 混用、日志和异常处理不统一、测试项目缺失或边界不清、包版本漂移、格式化配置冲突、gitignore 或 LFS 规则不完整、文档漂移、提交规范缺失。
 - 低：局部命名不一致、个别文件位置不理想、少量配置说明不清。
 
-只写真实问题。没有证据不要写。
-
-## 报告结构和表达要求
+## 报告补充
 
 沿用 `review-engineering` 的报告结构、问题定性和表达要求，报告标题用 `# <项目名>.NET 工程评审报告`。
-
-必须按 `review-engineering` 的报告落地规则，在项目根目录 `docs/reviews/` 下生成或合并 `YYYY-MM-dd-主题描述.md` 评审报告。
 
 评审范围写清楚：本次只评审 .NET 工程体系、解决方案边界、质量门禁、测试体系和风险，不评价功能需求完成度、业务规则正确性或界面效果。检查情况中列出已执行或无法执行的 `dotnet format`、`dotnet build`、`dotnet test`、打包发布命令及结果。
