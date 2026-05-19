@@ -17,7 +17,7 @@ $TagArchiveUrl = "https://github.com/$RepoOwner/$RepoName/archive/refs/tags/$Ref
 
 function Show-Help {
     @"
-Install Qimeng Agent Skill Pack.
+Install Kimo Agent Skill Pack.
 
 Usage:
   powershell -ExecutionPolicy Bypass -File install.ps1 [options]

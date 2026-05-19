@@ -10,7 +10,7 @@ DRY_RUN=0
 
 show_help() {
   cat <<EOF
-Install Qimeng Agent Skill Pack.
+Install Kimo Agent Skill Pack.
 
 Usage:
   sh install.sh [options]
