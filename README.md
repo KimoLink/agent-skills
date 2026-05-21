@@ -9,13 +9,13 @@
 Windows PowerShell：
 
 ```powershell
-irm https://raw.githubusercontent.com/KimoLink/.agents/master/install.ps1 | iex
+irm https://raw.githubusercontent.com/KimoLink/agent-skills/master/install.ps1 | iex
 ```
 
 Linux、macOS 或 Git Bash：
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KimoLink/.agents/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/master/install.sh | sh
 ```
 
 脚本会进入交互式选择：
@@ -34,21 +34,21 @@ curl -fsSL https://raw.githubusercontent.com/KimoLink/.agents/master/install.sh 
 PowerShell：
 
 ```powershell
-irm https://raw.githubusercontent.com/KimoLink/.agents/master/install.ps1 -OutFile install.ps1
+irm https://raw.githubusercontent.com/KimoLink/agent-skills/master/install.ps1 -OutFile install.ps1
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -Target codex -Yes
 ```
 
 sh：
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KimoLink/.agents/master/install.sh -o install.sh
+curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/master/install.sh -o install.sh
 sh install.sh --target codex --yes
 ```
 
 远程执行时也可以传参：
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KimoLink/.agents/master/install.sh | sh -s -- --target codex --yes
+curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/master/install.sh | sh -s -- --target codex --yes
 ```
 
 可用目标为 `codex`、`claude`、`agents`、`all`。使用 `-DryRun` 或 `--dry-run` 可查看计划写入内容但不落盘。
@@ -56,12 +56,12 @@ curl -fsSL https://raw.githubusercontent.com/KimoLink/.agents/master/install.sh 
 需要锁定版本时，使用 tag 地址并显式指定 ref：
 
 ```powershell
-irm https://raw.githubusercontent.com/KimoLink/.agents/v0.1.0/install.ps1 -OutFile install.ps1
+irm https://raw.githubusercontent.com/KimoLink/agent-skills/v0.1.0/install.ps1 -OutFile install.ps1
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -Ref v0.1.0
 ```
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KimoLink/.agents/v0.1.0/install.sh | sh -s -- --ref v0.1.0
+curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/v0.1.0/install.sh | sh -s -- --ref v0.1.0
 ```
 
 ## 使用方式

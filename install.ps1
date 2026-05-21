@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $RepoOwner = "KimoLink"
-$RepoName = ".agents"
+$RepoName = "agent-skills"
 $ArchiveUrl = "https://github.com/$RepoOwner/$RepoName/archive/refs/heads/$Ref.zip"
 $TagArchiveUrl = "https://github.com/$RepoOwner/$RepoName/archive/refs/tags/$Ref.zip"
 
@@ -157,7 +157,11 @@ function Expand-ArchiveFromGitHub($WorkDir) {
     }
 
     Expand-Archive -LiteralPath $archivePath -DestinationPath $WorkDir -Force
-    $sourceRoot = Get-ChildItem -Path $WorkDir -Directory | Where-Object { $_.Name -like "$RepoName-*" } | Select-Object -First 1
+    $sourceRoot = Get-ChildItem -Path $WorkDir -Directory | Where-Object {
+        (Test-Path (Join-Path $_.FullName "AGENTS.md")) -and
+        (Test-Path (Join-Path $_.FullName "skills")) -and
+        (Test-Path (Join-Path $_.FullName "install.ps1"))
+    } | Select-Object -First 1
     if (-not $sourceRoot) {
         throw "Unable to locate extracted source directory."
     }

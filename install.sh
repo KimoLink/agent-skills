@@ -2,7 +2,7 @@
 set -eu
 
 REPO_OWNER="KimoLink"
-REPO_NAME=".agents"
+REPO_NAME="agent-skills"
 TARGET=""
 REF="master"
 YES=0
@@ -195,7 +195,12 @@ download_source() {
   fi
 
   tar -xzf "$archive_path" -C "$work_dir"
-  find "$work_dir" -maxdepth 1 -type d -name "$REPO_NAME-*" | head -n 1
+  find "$work_dir" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r source_root; do
+    if [ -f "$source_root/AGENTS.md" ] && [ -d "$source_root/skills" ] && [ -f "$source_root/install.sh" ]; then
+      printf '%s\n' "$source_root"
+      break
+    fi
+  done
 }
 
 selected_target="$(select_target)"
