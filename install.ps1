@@ -1,5 +1,4 @@
 param(
-    [ValidateSet("codex", "claude", "agents", "all")]
     [string]$Target,
     [string]$Ref = "master",
     [switch]$Yes,
@@ -39,6 +38,17 @@ function Get-InstallerVersion {
         return (Get-Content -Path $versionFile -TotalCount 1).Trim()
     }
     return $Ref
+}
+
+function Assert-ValidTarget($Value) {
+    if ([string]::IsNullOrWhiteSpace($Value)) {
+        return
+    }
+
+    $validTargets = @("codex", "claude", "agents", "all")
+    if ($validTargets -notcontains $Value) {
+        throw "Invalid target: $Value. Expected one of: $($validTargets -join ', ')."
+    }
 }
 
 function Confirm-Overwrite($Path) {
@@ -87,6 +97,7 @@ function Copy-PathWithBackup($Source, $Destination, $Timestamp) {
 
 function Select-Target {
     if ($Target) {
+        Assert-ValidTarget $Target
         return $Target
     }
 
