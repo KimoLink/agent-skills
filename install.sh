@@ -7,6 +7,56 @@ TARGET=""
 REF="master"
 YES=0
 DRY_RUN=0
+COLOR=0
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+  COLOR=1
+fi
+
+color() {
+  if [ "$COLOR" -eq 1 ]; then
+    printf '\033[%sm' "$1"
+  fi
+}
+
+reset_color() {
+  if [ "$COLOR" -eq 1 ]; then
+    printf '\033[0m'
+  fi
+}
+
+status() {
+  kind="$1"
+  shift
+  case "$kind" in
+    step) prefix="[step]"; code="36" ;;
+    ok) prefix="[ok]"; code="32" ;;
+    warn) prefix="[warn]"; code="33" ;;
+    dry-run) prefix="[dry-run]"; code="35" ;;
+    *) prefix="[info]"; code="90" ;;
+  esac
+
+  color "$code"
+  printf '%s' "$prefix"
+  reset_color
+  printf ' '
+  printf "$@"
+  printf '\n'
+}
+
+option() {
+  number="$1"
+  name="$2"
+  path="$3"
+  printf '  '
+  color "33"
+  printf '[%s]' "$number"
+  reset_color
+  printf ' %s  ' "$name"
+  color "90"
+  printf '%s' "$path"
+  reset_color
+  printf '\n'
+}
 
 show_help() {
   cat <<EOF
@@ -98,13 +148,10 @@ backup_existing() {
   fi
 
   backup_path="$path.bak.$timestamp"
-  if [ "$DRY_RUN" -eq 1 ]; then
-    printf '[dry-run] backup %s -> %s\n' "$path" "$backup_path"
-    return 0
+  if [ "$DRY_RUN" -eq 0 ]; then
+    mv "$path" "$backup_path"
   fi
-
-  mv "$path" "$backup_path"
-  printf 'Backed up %s -> %s\n' "$path" "$backup_path"
+  printf '%s\n' "$backup_path"
 }
 
 copy_path_with_backup() {
@@ -114,20 +161,34 @@ copy_path_with_backup() {
 
   if [ -e "$destination" ]; then
     if ! confirm_overwrite "$destination"; then
-      printf 'Skipped %s\n' "$destination"
+      status "warn" 'skipped %s' "$destination"
       return 0
     fi
-    backup_existing "$destination" "$timestamp"
+    backup_path="$(backup_existing "$destination" "$timestamp")"
+    verb="update"
+    done_verb="updated"
+  else
+    backup_path=""
+    verb="install"
+    done_verb="installed"
   fi
 
   if [ "$DRY_RUN" -eq 1 ]; then
-    printf '[dry-run] copy %s -> %s\n' "$source" "$destination"
+    if [ -n "$backup_path" ]; then
+      status "dry-run" 'would %s %s (backup: %s)' "$verb" "$destination" "$backup_path"
+    else
+      status "dry-run" 'would %s %s' "$verb" "$destination"
+    fi
     return 0
   fi
 
   mkdir -p "$(dirname "$destination")"
   cp -R "$source" "$destination"
-  printf 'Installed %s\n' "$destination"
+  if [ -n "$backup_path" ]; then
+    status "ok" '%s %s (backup: %s)' "$done_verb" "$destination" "$backup_path"
+  else
+    status "ok" '%s %s' "$done_verb" "$destination"
+  fi
 }
 
 select_target() {
@@ -141,11 +202,11 @@ select_target() {
     exit 1
   fi
 
-  printf 'Select install target:\n'
-  printf '  1. Codex       ~/.codex\n'
-  printf '  2. Claude Code ~/.claude\n'
-  printf '  3. Common      ~/.agents\n'
-  printf '  4. All\n'
+  status "step" 'Select install target'
+  option "1" "Codex      " "~/.codex"
+  option "2" "Claude Code" "~/.claude"
+  option "3" "Common     " "~/.agents"
+  option "4" "All        " "all targets"
   printf 'Target [1-4] '
   read choice </dev/tty
 
@@ -165,7 +226,7 @@ install_to_target() {
   rules_file="$4"
   timestamp="$5"
 
-  printf 'Installing to %s: %s\n' "$name" "$root"
+  status "step" 'Installing to %s: %s' "$name" "$root"
   copy_path_with_backup "$source_root/AGENTS.md" "$root/$rules_file" "$timestamp"
 
   if [ ! -d "$source_root/skills" ]; then
@@ -217,11 +278,13 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
+status "step" 'Downloading %s/%s@%s' "$REPO_OWNER" "$REPO_NAME" "$REF"
 source_root="$(download_source "$work_dir")"
 if [ -z "$source_root" ]; then
   printf 'Unable to locate extracted source directory.\n' >&2
   exit 1
 fi
+status "ok" 'source ready: %s' "$source_root"
 
 case "$selected_target" in
   codex)
@@ -240,4 +303,4 @@ case "$selected_target" in
     ;;
 esac
 
-printf 'Done.\n'
+status "ok" 'Done.'

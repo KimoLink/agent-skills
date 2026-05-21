@@ -40,6 +40,26 @@ function Get-InstallerVersion {
     return $Ref
 }
 
+function Write-Status($Kind, $Message) {
+    switch ($Kind) {
+        "step" { $prefix = "[step]"; $color = "Cyan" }
+        "ok" { $prefix = "[ok]"; $color = "Green" }
+        "warn" { $prefix = "[warn]"; $color = "Yellow" }
+        "dry-run" { $prefix = "[dry-run]"; $color = "Magenta" }
+        default { $prefix = "[info]"; $color = "Gray" }
+    }
+
+    Write-Host $prefix -ForegroundColor $color -NoNewline
+    Write-Host " $Message"
+}
+
+function Write-Option($Number, $Name, $Path) {
+    Write-Host "  " -NoNewline
+    Write-Host "[$Number]" -ForegroundColor Yellow -NoNewline
+    Write-Host " $Name" -NoNewline
+    Write-Host "  $Path" -ForegroundColor DarkGray
+}
+
 function Assert-ValidTarget($Value) {
     if ([string]::IsNullOrWhiteSpace($Value)) {
         return
@@ -62,37 +82,41 @@ function Confirm-Overwrite($Path) {
 
 function Backup-Existing($Path, $Timestamp) {
     if (-not (Test-Path $Path)) {
-        return
+        return $null
     }
 
     $backupPath = "$Path.bak.$Timestamp"
-    if ($DryRun) {
-        Write-Host "[dry-run] backup $Path -> $backupPath"
-        return
+    if (-not $DryRun) {
+        Move-Item -LiteralPath $Path -Destination $backupPath -Force
     }
 
-    Move-Item -LiteralPath $Path -Destination $backupPath -Force
-    Write-Host "Backed up $Path -> $backupPath"
+    return $backupPath
 }
 
 function Copy-PathWithBackup($Source, $Destination, $Timestamp) {
-    if (Test-Path $Destination) {
+    $exists = Test-Path $Destination
+    if ($exists) {
         if (-not (Confirm-Overwrite $Destination)) {
-            Write-Host "Skipped $Destination"
+            Write-Status "warn" "skipped $Destination"
             return
         }
-        Backup-Existing $Destination $Timestamp
+        $backupPath = Backup-Existing $Destination $Timestamp
+    } else {
+        $backupPath = $null
     }
 
+    $verb = if ($exists) { "update" } else { "install" }
+    $doneVerb = if ($exists) { "updated" } else { "installed" }
+    $backupNote = if ($backupPath) { " (backup: $backupPath)" } else { "" }
     if ($DryRun) {
-        Write-Host "[dry-run] copy $Source -> $Destination"
+        Write-Status "dry-run" "would $verb $Destination$backupNote"
         return
     }
 
     $parent = Split-Path -Parent $Destination
     New-Item -ItemType Directory -Force -Path $parent | Out-Null
     Copy-Item -LiteralPath $Source -Destination $Destination -Recurse -Force
-    Write-Host "Installed $Destination"
+    Write-Status "ok" "$doneVerb $Destination$backupNote"
 }
 
 function Select-Target {
@@ -101,11 +125,11 @@ function Select-Target {
         return $Target
     }
 
-    Write-Host "Select install target:"
-    Write-Host "  1. Codex       ~/.codex"
-    Write-Host "  2. Claude Code ~/.claude"
-    Write-Host "  3. Common      ~/.agents"
-    Write-Host "  4. All"
+    Write-Status "step" "Select install target"
+    Write-Option "1" "Codex      " "~/.codex"
+    Write-Option "2" "Claude Code" "~/.claude"
+    Write-Option "3" "Common     " "~/.agents"
+    Write-Option "4" "All        " "all targets"
     $choice = Read-Host "Target [1-4]"
 
     switch ($choice) {
@@ -170,7 +194,7 @@ function Expand-ArchiveFromGitHub($WorkDir) {
 }
 
 function Install-ToTarget($SourceRoot, $Spec, $Timestamp) {
-    Write-Host "Installing to $($Spec.Name): $($Spec.Root)"
+    Write-Status "step" "Installing to $($Spec.Name): $($Spec.Root)"
 
     $sourceRules = Join-Path $SourceRoot "AGENTS.md"
     $targetRules = Join-Path $Spec.Root $Spec.RulesFile
@@ -207,12 +231,14 @@ $workDir = Join-Path ([System.IO.Path]::GetTempPath()) $workDirName
 New-Item -ItemType Directory -Force -Path $workDir | Out-Null
 
 try {
+    Write-Status "step" "Downloading $RepoOwner/$RepoName@$Ref"
     $sourceRoot = Expand-ArchiveFromGitHub $workDir
+    Write-Status "ok" "source ready: $sourceRoot"
     $specs = Get-TargetSpecs $selectedTarget
     foreach ($spec in $specs) {
         Install-ToTarget $sourceRoot $spec $timestamp
     }
-    Write-Host "Done."
+    Write-Status "ok" "Done."
 } finally {
     if (Test-Path $workDir) {
         Remove-Item -LiteralPath $workDir -Recurse -Force
