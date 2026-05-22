@@ -1,7 +1,7 @@
 interface:
   display_name: "中文去 AI 腔"
-  short_description: "降低中文专业文本的 AI 腔和模板化表达。"
-  default_prompt: "使用 $de-ai 改写当前中文文本，降低 AI 腔和模板化表达，同时保留事实、范围和专业语气。"
+  short_description: "降低中文专业文本的 AI 腔、模板化表达和否定式边界表述。"
+  default_prompt: "使用 $de-ai 改写当前中文文本，降低 AI 腔、模板化表达和否定式边界表述，同时保留事实、范围和专业语气。"
 
 policy:
   allow_implicit_invocation: true
