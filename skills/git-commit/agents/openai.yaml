@@ -1,4 +1,4 @@
 interface:
   display_name: "Git 提交"
-  short_description: "按仓库历史风格检查、拆分并提交 Git 变更。"
-  default_prompt: "使用 $git-commit 检查当前 Git 状态和近期提交历史，按逻辑单元暂存变更，并用仓库既有风格完成提交。"
+  short_description: "按仓库提交格式检查、拆分并提交 Git 变更。"
+  default_prompt: "使用 $git-commit 检查当前 Git 状态和近期提交格式，按逻辑单元暂存变更，并基于 staged diff 完成提交。"
