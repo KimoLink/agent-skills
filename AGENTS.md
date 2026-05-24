@@ -59,7 +59,9 @@ CSharpier 负责格式，`.editorconfig` 中的命名、可见性、readonly 等
 
 Unity 项目禁止使用 `dotnet build`、`msbuild` 或直接编译 Unity 生成的 `.csproj` / `.sln` 作为验证方式；不要把这类外部编译结果说成 Unity 项目已验证，Unity 官方也不支持用这种方式替代 Editor 内编译、导入、测试或构建。
 
-不得为了让外部编译通过而修改 Unity 生成的 `.csproj`、`.sln`、`Library/`、`Temp/` 或其他本地生成产物。Unity 项目的验证应优先使用 Unity Editor、Unity Test Framework、项目已有 batchmode / BuildPipeline 入口；如果当前环境无法运行 Unity，只能如实说明未执行 Unity 验证，并改用文本扫描、资源/YAML 一致性检查、`git diff --check`、目标脚本或项目已有静态检查作为辅助，不得冒充完整验证。
+不得为了让外部编译通过而修改 Unity 生成的 `.csproj`、`.sln`、`Library/`、`Temp/` 或其他本地生成产物。不得主动查找 Unity Editor 安装目录、启动 Unity Editor、操作 Unity Editor 图形界面，或把 Unity Editor 作为常规验证步骤；Unity Editor 交互验证由用户负责。
+
+只有用户明确要求执行 Unity 验证，或项目提供已确认的非交互式 Unity Test Framework、batchmode、BuildPipeline 等自动化入口且当前任务明确需要时，才可以运行对应 Unity 自动化命令。执行前必须说明验证入口、影响范围和生成产物风险；如果未执行 Unity 验证，只能如实说明未执行，并改用文本扫描、资源/YAML 一致性检查、`git diff --check`、目标脚本或项目已有静态检查作为辅助，不得冒充完整验证。
 
 ### Rust
 
