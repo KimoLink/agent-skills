@@ -1,7 +1,7 @@
 interface:
   display_name: "Nuxt 工程评审"
   short_description: "评审 Nuxt 前端工程体系、架构规范与风险治理。"
-  default_prompt: "结合 $review-engineering 的通用工程基线和 $review-nuxt 的 Nuxt 前端专项清单，对当前 Nuxt 前端项目做一次工程评审，并在 docs/reviews/ 下生成或合并评审报告。"
+  default_prompt: "使用 $review-nuxt 先采用 $review-engineering 的通用工程基线，再读取 review-engineering/stacks/nuxt.md 的 Nuxt/Vue 专项清单，对当前项目做一次工程评审，并在 docs/reviews/ 下生成或合并评审报告。"
 
 policy:
   allow_implicit_invocation: true
