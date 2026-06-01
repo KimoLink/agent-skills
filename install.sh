@@ -143,12 +143,16 @@ confirm_overwrite() {
 backup_existing() {
   path="$1"
   timestamp="$2"
+  backup_path="${3:-}"
   if [ ! -e "$path" ]; then
     return 0
   fi
 
-  backup_path="$path.bak.$timestamp"
+  if [ -z "$backup_path" ]; then
+    backup_path="$path.bak.$timestamp"
+  fi
   if [ "$DRY_RUN" -eq 0 ]; then
+    mkdir -p "$(dirname "$backup_path")"
     mv "$path" "$backup_path"
   fi
   printf '%s\n' "$backup_path"
@@ -158,13 +162,14 @@ copy_path_with_backup() {
   source="$1"
   destination="$2"
   timestamp="$3"
+  backup_destination="${4:-}"
 
   if [ -e "$destination" ]; then
     if ! confirm_overwrite "$destination"; then
       status "warn" 'skipped %s' "$destination"
       return 0
     fi
-    backup_path="$(backup_existing "$destination" "$timestamp")"
+    backup_path="$(backup_existing "$destination" "$timestamp" "$backup_destination")"
     verb="update"
     done_verb="updated"
   else
@@ -189,6 +194,35 @@ copy_path_with_backup() {
   else
     status "ok" '%s %s' "$done_verb" "$destination"
   fi
+}
+
+move_legacy_skill_backups() {
+  target_skills="$1"
+  backup_root="$2"
+
+  if [ ! -d "$target_skills" ]; then
+    return 0
+  fi
+
+  for legacy_backup in "$target_skills"/*.bak.[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]; do
+    [ -d "$legacy_backup" ] || continue
+    [ -f "$legacy_backup/SKILL.md" ] || continue
+
+    destination="$backup_root/$(basename "$legacy_backup")"
+    if [ -e "$destination" ]; then
+      status "warn" 'legacy backup already exists, skipped %s' "$legacy_backup"
+      continue
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+      status "dry-run" 'would move legacy skill backup %s to %s' "$legacy_backup" "$destination"
+      continue
+    fi
+
+    mkdir -p "$backup_root"
+    mv "$legacy_backup" "$destination"
+    status "ok" 'moved legacy skill backup %s to %s' "$legacy_backup" "$destination"
+  done
 }
 
 select_target() {
@@ -234,9 +268,12 @@ install_to_target() {
     exit 1
   fi
 
+  move_legacy_skill_backups "$root/skills" "$root/.skill-backups/skills"
+
   for skill in "$source_root"/skills/*; do
     [ -d "$skill" ] || continue
-    copy_path_with_backup "$skill" "$root/skills/$(basename "$skill")" "$timestamp"
+    skill_name="$(basename "$skill")"
+    copy_path_with_backup "$skill" "$root/skills/$skill_name" "$timestamp" "$root/.skill-backups/skills/$skill_name.bak.$timestamp"
   done
 }
 

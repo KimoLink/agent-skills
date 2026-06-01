@@ -80,27 +80,31 @@ function Confirm-Overwrite($Path) {
     return [string]::IsNullOrWhiteSpace($answer) -or $answer -match "^(y|yes)$"
 }
 
-function Backup-Existing($Path, $Timestamp) {
+function Backup-Existing($Path, $Timestamp, $BackupPath) {
     if (-not (Test-Path $Path)) {
         return $null
     }
 
-    $backupPath = "$Path.bak.$Timestamp"
+    $backupPath = if ($BackupPath) { $BackupPath } else { "$Path.bak.$Timestamp" }
     if (-not $DryRun) {
+        $backupParent = Split-Path -Parent $backupPath
+        if ($backupParent) {
+            New-Item -ItemType Directory -Force -Path $backupParent | Out-Null
+        }
         Move-Item -LiteralPath $Path -Destination $backupPath -Force
     }
 
     return $backupPath
 }
 
-function Copy-PathWithBackup($Source, $Destination, $Timestamp) {
+function Copy-PathWithBackup($Source, $Destination, $Timestamp, $BackupPath = $null) {
     $exists = Test-Path $Destination
     if ($exists) {
         if (-not (Confirm-Overwrite $Destination)) {
             Write-Status "warn" "skipped $Destination"
             return
         }
-        $backupPath = Backup-Existing $Destination $Timestamp
+        $backupPath = Backup-Existing $Destination $Timestamp $BackupPath
     } else {
         $backupPath = $null
     }
@@ -117,6 +121,32 @@ function Copy-PathWithBackup($Source, $Destination, $Timestamp) {
     New-Item -ItemType Directory -Force -Path $parent | Out-Null
     Copy-Item -LiteralPath $Source -Destination $Destination -Recurse -Force
     Write-Status "ok" "$doneVerb $Destination$backupNote"
+}
+
+function Move-LegacySkillBackups($TargetSkills, $BackupRoot) {
+    if (-not (Test-Path $TargetSkills)) {
+        return
+    }
+
+    Get-ChildItem -Path $TargetSkills -Directory | Where-Object {
+        ($_.Name -match "^.+\.bak\.\d{14}$") -and
+        (Test-Path (Join-Path $_.FullName "SKILL.md"))
+    } | ForEach-Object {
+        $destination = Join-Path $BackupRoot $_.Name
+        if (Test-Path $destination) {
+            Write-Status "warn" "legacy backup already exists, skipped $($_.FullName)"
+            return
+        }
+
+        if ($DryRun) {
+            Write-Status "dry-run" "would move legacy skill backup $($_.FullName) to $destination"
+            return
+        }
+
+        New-Item -ItemType Directory -Force -Path $BackupRoot | Out-Null
+        Move-Item -LiteralPath $_.FullName -Destination $destination
+        Write-Status "ok" "moved legacy skill backup $($_.FullName) to $destination"
+    }
 }
 
 function Select-Target {
@@ -202,14 +232,19 @@ function Install-ToTarget($SourceRoot, $Spec, $Timestamp) {
 
     $sourceSkills = Join-Path $SourceRoot "skills"
     $targetSkills = Join-Path $Spec.Root "skills"
+    $skillBackupRoot = Join-Path $Spec.Root ".skill-backups"
+    $skillBackupRoot = Join-Path $skillBackupRoot "skills"
 
     if (-not (Test-Path $sourceSkills)) {
         throw "Missing source skills directory: $sourceSkills"
     }
 
+    Move-LegacySkillBackups $targetSkills $skillBackupRoot
+
     Get-ChildItem -Path $sourceSkills -Directory | ForEach-Object {
         $destination = Join-Path $targetSkills $_.Name
-        Copy-PathWithBackup $_.FullName $destination $Timestamp
+        $backupDestination = Join-Path $skillBackupRoot "$($_.Name).bak.$Timestamp"
+        Copy-PathWithBackup $_.FullName $destination $Timestamp $backupDestination
     }
 }
 

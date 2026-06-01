@@ -25,7 +25,7 @@ curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/master/instal
 - 通用目录：写入 `~/.agents/AGENTS.md` 和 `~/.agents/skills/`
 - 全部目标：同时写入以上三个位置
 
-发现已有规则文件或同名 skill 时，脚本会提示是否覆盖，默认回车即覆盖。覆盖前会把旧文件或旧目录备份为 `.bak.<timestamp>`；目标目录里其他不同名 skill 不会被删除。
+发现已有规则文件或同名 skill 时，脚本会提示是否覆盖，默认回车即覆盖。覆盖前会把旧规则文件备份为同目录 `.bak.<timestamp>`，把旧 skill 目录备份到目标根目录下的 `.skill-backups/skills/<skill>.bak.<timestamp>`；目标目录里其他不同名 skill 不会被删除。安装时会顺带把旧版本遗留在 `skills/` 下的 `<skill>.bak.<timestamp>` 目录迁移到 `.skill-backups/skills/`。
 
 直接执行远程脚本前，建议先下载脚本查看内容，再执行。
 
