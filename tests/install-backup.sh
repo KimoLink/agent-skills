@@ -28,6 +28,16 @@ mkdir -p "$temp_root"
 sed '/^selected_target=/,$d' "$repo_root/install.sh" >"$installer_functions"
 . "$installer_functions"
 
+assert_contains() {
+  if ! grep -Fq "$2" "$1"; then
+    printf '%s\n' "$3" >&2
+    exit 1
+  fi
+}
+
+assert_contains "$repo_root/install.sh" 'codex|claude|agents|trae|all' "install.sh help should list trae target"
+assert_contains "$repo_root/install.sh" 'install_to_target "$source_root" "Trae" "$HOME/.trae" "user_rules.md" "$timestamp"' "install.sh should install Trae user rules"
+
 source_root="$temp_root/source"
 target_root="$temp_root/target"
 source_skill="$source_root/skills/sample-skill"

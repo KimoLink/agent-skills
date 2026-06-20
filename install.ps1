@@ -23,7 +23,7 @@ Usage:
   irm https://raw.githubusercontent.com/$RepoOwner/$RepoName/master/install.ps1 | iex
 
 Options:
-  -Target codex|claude|agents|all  Install target. Omit for interactive selection.
+  -Target codex|claude|agents|trae|all  Install target. Omit for interactive selection.
   -Ref <ref>                       Git branch or tag to install from. Default: master.
   -Yes                             Accept overwrite prompts.
   -DryRun                          Print planned changes without writing files.
@@ -65,7 +65,7 @@ function Assert-ValidTarget($Value) {
         return
     }
 
-    $validTargets = @("codex", "claude", "agents", "all")
+    $validTargets = @("codex", "claude", "agents", "trae", "all")
     if ($validTargets -notcontains $Value) {
         throw "Invalid target: $Value. Expected one of: $($validTargets -join ', ')."
     }
@@ -159,14 +159,16 @@ function Select-Target {
     Write-Option "1" "Codex      " "~/.codex"
     Write-Option "2" "Claude Code" "~/.claude"
     Write-Option "3" "Common     " "~/.agents"
-    Write-Option "4" "All        " "all targets"
-    $choice = Read-Host "Target [1-4]"
+    Write-Option "4" "Trae       " "~/.trae"
+    Write-Option "5" "All        " "all targets"
+    $choice = Read-Host "Target [1-5]"
 
     switch ($choice) {
         "1" { return "codex" }
         "2" { return "claude" }
         "3" { return "agents" }
-        "4" { return "all" }
+        "4" { return "trae" }
+        "5" { return "all" }
         default { throw "Invalid target selection: $choice" }
     }
 }
@@ -196,6 +198,14 @@ function Get-TargetSpecs($SelectedTarget) {
             Name = "Common"
             Root = Join-Path $homeDir ".agents"
             RulesFile = "AGENTS.md"
+        }
+    }
+
+    if ($SelectedTarget -eq "trae" -or $SelectedTarget -eq "all") {
+        $specs += @{
+            Name = "Trae"
+            Root = Join-Path $homeDir ".trae"
+            RulesFile = "user_rules.md"
         }
     }
 

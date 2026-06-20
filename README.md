@@ -1,6 +1,6 @@
 # 奇梦智能体技能包
 
-面向 Codex、Claude Code 和通用 `.agents` 目录的全局规则与 skills。安装后即可获得中文协作规则、Git 提交收口、工程评审、专利评审和中文文档处理能力。
+面向 Codex、Claude Code、Trae 和通用 `.agents` 目录的全局规则与 skills。安装后即可获得中文协作规则、Git 提交收口、工程评审、专利评审和中文文档处理能力。
 
 ## 快速安装
 
@@ -21,6 +21,7 @@ curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/master/instal
 - Codex：`~/.codex/AGENTS.md`、`~/.codex/skills/`
 - Claude Code：`~/.claude/CLAUDE.md`、`~/.claude/skills/`
 - 通用目录：`~/.agents/AGENTS.md`、`~/.agents/skills/`
+- Trae：`~/.trae/user_rules.md` 个人规则、`~/.trae/skills/`
 - 全部目标：同时写入以上位置
 
 覆盖已有规则或同名 skill 前会自动备份。规则文件备份为同目录 `.bak.<timestamp>`；旧 skill 目录备份到目标根目录的 `.skill-backups/skills/`。不同名 skill 不会被删除。
@@ -51,7 +52,7 @@ curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/master/instal
 
 常用参数：
 
-- `codex`、`claude`、`agents`、`all`：安装目标。
+- `codex`、`claude`、`agents`、`trae`、`all`：安装目标。
 - `-DryRun` / `--dry-run`：只查看计划写入内容。
 - `-Ref <ref>` / `--ref <ref>`：指定分支或 tag，默认 `master`。
 - `-Yes` / `--yes`：非交互确认覆盖。
@@ -69,7 +70,7 @@ curl -fsSL https://raw.githubusercontent.com/KimoLink/agent-skills/v0.1.0/instal
 
 ## 使用
 
-安装到 Codex 后，`AGENTS.md` 会作为全局规则生效，skills 可用 `$skill-name` 触发。
+安装到 Codex 后，`AGENTS.md` 会作为全局规则生效；安装到 Trae 后，`user_rules.md` 会作为个人规则文件写入，skills 会写入 `~/.trae/skills/`。skills 可用 `$skill-name` 触发。
 
 常用入口：
 

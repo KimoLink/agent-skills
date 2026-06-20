@@ -16,6 +16,16 @@ function Assert-True($Condition, $Message) {
     }
 }
 
+$traeSpecs = @(Get-TargetSpecs "trae")
+Assert-True ($traeSpecs.Count -eq 1) "trae target should resolve to one install spec"
+Assert-True ($traeSpecs[0].Name -eq "Trae") "trae target name should be Trae"
+Assert-True ($traeSpecs[0].Root.EndsWith(".trae")) "trae target root should be ~/.trae"
+Assert-True ($traeSpecs[0].RulesFile -eq "user_rules.md") "trae target should install user_rules.md"
+
+$allSpecs = @(Get-TargetSpecs "all")
+$traeInAll = @($allSpecs | Where-Object { $_.Name -eq "Trae" })
+Assert-True ($traeInAll.Count -eq 1) "all target should include Trae"
+
 $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) "agent-skills-backup-test-$([System.Guid]::NewGuid().ToString('N'))"
 try {
     $sourceRoot = Join-Path $tempRoot "source"

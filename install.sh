@@ -67,7 +67,7 @@ Usage:
   curl -fsSL https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/master/install.sh | sh
 
 Options:
-  --target codex|claude|agents|all  Install target. Omit for interactive selection.
+  --target codex|claude|agents|trae|all  Install target. Omit for interactive selection.
   --ref <ref>                       Git branch or tag to install from. Default: master.
   --yes                             Accept overwrite prompts.
   --dry-run                         Print planned changes without writing files.
@@ -114,7 +114,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 case "$TARGET" in
-  ""|codex|claude|agents|all) ;;
+  ""|codex|claude|agents|trae|all) ;;
   *)
     printf 'Invalid target: %s\n' "$TARGET" >&2
     exit 1
@@ -232,7 +232,7 @@ select_target() {
   fi
 
   if [ ! -r /dev/tty ]; then
-    printf 'Interactive target selection requires a TTY. Re-run with --target codex|claude|agents|all.\n' >&2
+    printf 'Interactive target selection requires a TTY. Re-run with --target codex|claude|agents|trae|all.\n' >&2
     exit 1
   fi
 
@@ -240,15 +240,17 @@ select_target() {
   option "1" "Codex      " "~/.codex"
   option "2" "Claude Code" "~/.claude"
   option "3" "Common     " "~/.agents"
-  option "4" "All        " "all targets"
-  printf 'Target [1-4] '
+  option "4" "Trae       " "~/.trae"
+  option "5" "All        " "all targets"
+  printf 'Target [1-5] '
   read choice </dev/tty
 
   case "$choice" in
     1) printf 'codex\n' ;;
     2) printf 'claude\n' ;;
     3) printf 'agents\n' ;;
-    4) printf 'all\n' ;;
+    4) printf 'trae\n' ;;
+    5) printf 'all\n' ;;
     *) printf 'Invalid target selection: %s\n' "$choice" >&2; exit 1 ;;
   esac
 }
@@ -333,10 +335,14 @@ case "$selected_target" in
   agents)
     install_to_target "$source_root" "Common" "$HOME/.agents" "AGENTS.md" "$timestamp"
     ;;
+  trae)
+    install_to_target "$source_root" "Trae" "$HOME/.trae" "user_rules.md" "$timestamp"
+    ;;
   all)
     install_to_target "$source_root" "Codex" "$HOME/.codex" "AGENTS.md" "$timestamp"
     install_to_target "$source_root" "Claude Code" "$HOME/.claude" "CLAUDE.md" "$timestamp"
     install_to_target "$source_root" "Common" "$HOME/.agents" "AGENTS.md" "$timestamp"
+    install_to_target "$source_root" "Trae" "$HOME/.trae" "user_rules.md" "$timestamp"
     ;;
 esac
 
