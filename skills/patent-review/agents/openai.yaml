@@ -1,0 +1,7 @@
+interface:
+  display_name: "专利评审"
+  short_description: "评审专利技术交底书、发明点和申请前技术材料。"
+  default_prompt: "使用 $patent-review 评审这份专利技术交底书，指出材料完整性、发明点、实施例支撑和申请风险。"
+
+policy:
+  allow_implicit_invocation: true
